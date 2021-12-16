@@ -1,9 +1,11 @@
 package com.mobiquity.packer.service;
 
+import java.util.Optional;
+
 import com.mobiquity.packer.model.LineDetail;
 import com.mobiquity.packer.model.Solution;
 
 
 public interface Solver {
-	Solution solve(LineDetail configuration);
+	Optional<Solution> solve(LineDetail configuration);
 }

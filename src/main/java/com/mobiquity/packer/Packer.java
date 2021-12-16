@@ -11,34 +11,28 @@ import com.mobiquity.packer.factory.SolverFactory;
 import com.mobiquity.packer.model.LineDetail;
 import com.mobiquity.packer.model.Solution;
 import com.mobiquity.packer.service.Parser;
+import com.mobiquity.packer.service.Solver;
 
 public class Packer {
 
-	public static String pack(String filePath) throws APIException {
+	private static volatile Packer instance;
+	private PackerContext context;
 
-		try {
-			Parser parser = ParserFactory.createParserInstance();
-			String result = InputStreamFactory.createInputStream()//
-					.read(filePath)// read all lines
-					.map(line -> parser.parse(line)) // parse the line
-					.map(item -> process(item) ) // process the line
-					.collect(Collectors.joining(System.lineSeparator()));
-			System.out.println(result);
-			return result;
-
-		} catch (IOException e) {
-			throw new APIException("Path not found", e);
-		}
+	private Packer() {
+		this.context = new PackerContext(SolverFactory.createSolverInstance(), ParserFactory.createParserInstance(),
+				InputStreamFactory.createInputStream());
 	}
 
-	private static String process(Optional<LineDetail> configuration) {
-		Solution solution = SolverFactory.createSolverInstance().solve(configuration.get());
-
-		if (solution.getItems() != null && !solution.getItems().isEmpty()) {
-			return solution.getItems().stream().map(i -> i.getIndex().toString()).collect(Collectors.joining(","));
-		} else {
-			return "-";
+	public static synchronized Packer getInstance() {
+		if (instance == null) {
+			instance = new Packer();
 		}
+		return instance;
+	}
 
+
+
+	public static String pack(String filePath) throws APIException {
+		return Packer.getInstance().context.execute(filePath);
 	}
 }

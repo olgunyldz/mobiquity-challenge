@@ -12,7 +12,10 @@ public class Solution {
 		this.items = new ArrayList<>(items);
 		this.value = value;
 	}
-
+	public Solution(List<ItemDetail> items) {
+		this.items = new ArrayList<>(items);
+		this.value = this.items.stream().map(item -> item.getValue()).reduce(0, (a, b) -> a + b);
+	}
 	public List<ItemDetail> getItems() {
 		return items;
 	}
