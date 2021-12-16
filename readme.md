@@ -59,4 +59,7 @@ I have created instance's via Factory design patterns. I have created three Fact
 	
 	* SolverFactory to create business solution operation. But if there will be better algoritm, we can add this here.
 	
-	
+I have used strategy pattern to decide the algorithm.
+
+Singleton pattern for the object creation.
+
